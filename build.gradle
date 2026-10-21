@@ -1,0 +1,25 @@
+plugins {
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'org.spongepowered.mixin' version '0.7.38'
+}
+version = '0.3.0'
+group = 'com.lazarus.maps'
+base.archivesName = 'lazarusmaps'
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+minecraft {
+    mappings channel: 'official', version: '1.20.1'
+    runs {
+        client { workingDirectory project.file('run'); mods { lazarusmaps { source sourceSets.main } } }
+        server { workingDirectory project.file('run-server'); mods { lazarusmaps { source sourceSets.main } } }
+    }
+}
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.20.1-47.4.10'
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+}
+mixin {
+    add sourceSets.main, 'lazarusmaps.refmap.json'
+    config 'lazarusmaps.mixins.json'
+}
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+tasks.named('jar', Jar).configure { finalizedBy 'reobfJar' }
